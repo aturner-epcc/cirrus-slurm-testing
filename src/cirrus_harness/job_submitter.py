@@ -240,6 +240,8 @@ class JobSubmitter:
         # Resource specifications
         if job_type == "serial":
             lines.append(f"#SBATCH --ntasks=1")
+            if config.exclusive:
+                lines.append("#SBATCH --exclusive")
         else:
             lines.append(f"#SBATCH --nodes={config.nodes}")
             lines.append(f"#SBATCH --tasks-per-node={config.tasks_per_node}")
@@ -269,10 +271,13 @@ class JobSubmitter:
         lines.append(f"cd {config.workdir}")
         lines.append("")
         
-        # Environment setup based on job type
+        # Environment setup and commands based on job type
         if job_type == "serial":
             lines.append("# Serial job - enforce single thread")
             lines.append("export OMP_NUM_THREADS=1")
+            lines.append("")
+            lines.append("# Run serial job")
+            lines.append("srun " + " ".join(commands))
             lines.append("")
         elif job_type == "mpi":
             lines.append("# MPI job - enforce single thread per rank")

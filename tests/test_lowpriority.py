@@ -192,7 +192,7 @@ class TestLowPriorityUsage:
             nodes=1,
             tasks_per_node=288,
             cpus_per_task=1,
-            time="24:00:00",
+            time="23:59:00",  # Maximum in HH:MM:SS format
             exclusive=True,
             job_name="lowpriority_full",
         )

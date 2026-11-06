@@ -451,14 +451,12 @@ class TestHetJobUseCases:
                     nodes=1,
                     tasks_per_node=1,
                     cpus_per_task=1,
-                    job_name="server",
                 ),
                 # Client component
                 HetJobComponent(
                     nodes=4,
                     tasks_per_node=288,
                     cpus_per_task=1,
-                    job_name="clients",
                 ),
             ],
             job_name="server_client",
@@ -483,7 +481,6 @@ class TestHetJobUseCases:
                     nodes=2,
                     tasks_per_node=288,
                     cpus_per_task=1,
-                    exclusive=True,
                 ),
                 # Serial post-processing component
                 HetJobComponent(

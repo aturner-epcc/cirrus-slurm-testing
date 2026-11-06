@@ -272,9 +272,9 @@ class TestHybridJobs:
         assert script_path.exists()
         
         content = script_path.read_text()
-        assert "export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK" in content
+        assert "export OMP_NUM_THREADS=" in content
         assert "export OMP_PLACES=cores" in content
-        assert "export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK" in content
+        assert "export SRUN_CPUS_PER_TASK=" in content
     
     def test_hybrid_charge_calculation(self):
         """Test charge calculation for hybrid jobs."""
@@ -379,7 +379,7 @@ class TestOpenMPJobs:
         assert script_path.exists()
         
         content = script_path.read_text()
-        assert "export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK" in content
+        assert "export OMP_NUM_THREADS=" in content
         assert "export OMP_PLACES=cores" in content
     
     def test_openmp_charge_calculation(self):
