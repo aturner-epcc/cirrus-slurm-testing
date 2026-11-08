@@ -25,7 +25,7 @@ def example_serial_job():
     submitter = JobSubmitter()
     submission = submitter.submit_job(
         config,
-        commands=["echo 'Hello from serial job'"],
+        commands=["sleep 600"],
         job_type="serial"
     )
     
