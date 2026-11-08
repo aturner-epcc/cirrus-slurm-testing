@@ -293,6 +293,12 @@ class SlurmCLI:
         # Enforce minimum poll interval
         poll_interval = max(poll_interval, SlurmCLI.MIN_POLL_INTERVAL)
         
+        # Retry interval for sacct checks when job disappears from queue
+        # but accounting data is not yet available (SlurmDBD delay)
+        sacct_retry_interval = 30
+        # Maximum time to wait for sacct data after job disappears from queue
+        sacct_timeout = 300  # 5 minutes
+        
         start_time = time.time()
         last_state = "PENDING"
         
@@ -301,12 +307,21 @@ class SlurmCLI:
             
             if status is None:
                 # Job no longer in queue - check if completed
-                accounting = SlurmCLI.get_job_accounting(job_id)
-                if accounting:
-                    final_state = accounting[0].state
+                # sacct data may not be immediately available due to SlurmDBD delay
+                sacct_start = time.time()
+                while time.time() - sacct_start < sacct_timeout:
+                    accounting = SlurmCLI.get_job_accounting(job_id)
+                    if accounting:
+                        final_state = accounting[0].state
+                        if verbose:
+                            print(f"Job {job_id} completed with state: {final_state}")
+                        return final_state
                     if verbose:
-                        print(f"Job {job_id} completed with state: {final_state}")
-                    return final_state
+                        print(f"Job {job_id}: waiting for accounting data...")
+                    time.sleep(sacct_retry_interval)
+                
+                # sacct timeout - job completed but no accounting data
+                logger.warning(f"Job {job_id} disappeared from queue but no accounting data available")
                 return "UNKNOWN"
             
             current_state = status.state

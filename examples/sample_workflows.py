@@ -31,6 +31,14 @@ def example_serial_job():
     
     print(f"Submitted job {submission.job_id}")
     print(f"Script: {submission.script_path}")
+
+    submitter.wait_for_completion(submission, timeout=600, verbose=True)
+
+    # Calculate charge
+    calculator = ChargeCalculator()
+    charge = calculator.compute_charge(submission.job_id, config)
+    print(charge)
+
     
     return submission
 
@@ -285,7 +293,7 @@ def main():
     # Note: These examples will fail without Cirrus access
     # Uncomment to run on Cirrus login node:
     
-    # example_serial_job()
+    example_serial_job()
     # example_mpi_job()
     # example_hybrid_job()
     # example_job_array()
