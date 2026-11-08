@@ -14,7 +14,7 @@ def example_serial_job():
     config = SlurmJobConfig(
         partition="standard",
         qos="standard",
-        account="t01-test",
+        account="z19",
         nodes=1,
         tasks_per_node=1,
         cpus_per_task=1,
